@@ -1,8 +1,8 @@
-import { HashSource, HTTPTokenString, MimeTypeString, NonceSource } from "./string-sources";
-import { allow, allow_duplicates, block, none, script, self, strict_dynamic, unquoted_script, unquoted_style, unsafe_hashes, unsafe_inline, wildcard } from "./tokens";
+import { HashSource, HTTPTokenString, MimeTypeString, NonceSource, TrustedTypesPolicyName } from "./string-sources";
+import { allow, allow_duplicates, block, none, script, self, strict_dynamic, unquoted_script, unquoted_style, unsafe_eval, unsafe_hashes, unsafe_inline, wildcard } from "./tokens";
 import { HostURLSource, SchemeURLSource, URIReference, URLSource } from "./url-sources";
 
-type ScriptSourceCommon = strict_dynamic | unsafe_hashes | HashSource | NonceSource | HashSource | URLSource
+type ScriptSourceCommon = strict_dynamic | unsafe_hashes | unsafe_eval | HashSource | NonceSource | HashSource | URLSource
 
 // For directives that take no values (e.g. `upgrade-insecure-requests`)
 export class EmptyValue { #unique: true; toString(): string { return ""; } }
@@ -92,7 +92,7 @@ export interface CSP {
   // https://w3c.github.io/trusted-types/dist/spec/
   "require-trusted-types-for"?: script
   // https://w3c.github.io/trusted-types/dist/spec/#trusted-types-csp-directive
-  "trusted-types"?: (allow_duplicates | wildcard)[]
+  "trusted-types"?: (allow_duplicates | TrustedTypesPolicyName | wildcard)[]
 
   /**************** Deprecated ****************/
 

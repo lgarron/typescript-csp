@@ -1,10 +1,12 @@
 
 export class UnquotedStringSource {
 	constructor(public value: string) {}
+	toString(): string { return this.value; }
 }
 
 export class SingleQuotedStringSource {
 	constructor(public value: string) {}
+	toString(): string { return this.value; }
 }
 
 // `'script-src'`

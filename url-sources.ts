@@ -1,3 +1,4 @@
+import { wildcard } from "./tokens";
 
 export class URLSourceBaseClass {
 	constructor(public value: string) {}
@@ -37,7 +38,7 @@ export class WildcardHostURLSource extends URLSourceBaseClass {
 }
 export class OtherURLSource extends URLSourceBaseClass { #unique: true } // TODO
 
-export type URLSource = SchemeURLSource | HostURLSource | WildcardHostURLSource | OtherURLSource
+export type URLSource = SchemeURLSource | HostURLSource | WildcardHostURLSource | OtherURLSource | wildcard
 
 // https://www.rfc-editor.org/rfc/rfc3986#section-4.1
 export class URIReference extends URLSourceBaseClass { #unique: true }
