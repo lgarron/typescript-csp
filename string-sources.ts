@@ -8,7 +8,7 @@ export class SingleQuotedStringSource {
 }
 
 // `'script-src'`
-export class NonceSource extends SingleQuotedStringSource {#unique: true }
+export class NonceSource extends SingleQuotedStringSource { #unique: true }
 export class HashSourceSHA256 extends SingleQuotedStringSource { #unique: true }
 export class HashSourceSHA384 extends SingleQuotedStringSource { #unique: true; }
 export class HashSourceSHA512 extends SingleQuotedStringSource { #unique: true }

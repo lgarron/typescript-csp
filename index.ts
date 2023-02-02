@@ -2,21 +2,27 @@ import { HashSource, HTTPTokenString, MimeTypeString, NonceSource } from "./stri
 import { allow, allow_duplicates, block, none, script, self, strict_dynamic, unquoted_script, unquoted_style, unsafe_hashes, unsafe_inline, wildcard } from "./tokens";
 import { HostURLSource, SchemeURLSource, URIReference, URLSource } from "./url-sources";
 
-type ScriptSourceCommon = strict_dynamic | unsafe_hashes | HashSource | NonceSource | HashSource
+type ScriptSourceCommon = strict_dynamic | unsafe_hashes | HashSource | NonceSource | HashSource | URLSource
 
 // For directives that take no values (e.g. `upgrade-insecure-requests`)
-class EmptyValue { #unique: true }
+export class EmptyValue { #unique: true; toString(): string { return ""; } }
 
 type URLish = (self | URLSource)[] | none
 
-class DeprecatedButImplemented<T> {
-  #unique: true;
-  constructor(public value: T) {}
+type ToStringable = {
+  toString(): string
 }
 
-class DeprecatedAndUnimplemented<T> {
+export class DeprecatedButImplemented<T extends ToStringable> {
   #unique: true;
   constructor(public value: T) {}
+  toString(): string { return this.value.toString(); }
+}
+
+export class DeprecatedAndUnimplemented<T extends ToStringable> {
+  #unique: true;
+  constructor(public value: T) {}
+  toString(): string { return this.value.toString(); }
 }
 
 // Array entries
@@ -113,4 +119,17 @@ export interface CSP {
   // https://www.w3.org/TR/mixed-content/
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/block-all-mixed-content
   "block-all-mixed-content"?: DeprecatedButImplemented<EmptyValue>,
+}
+
+export function serializeCSP(csp: CSP): string {
+  return Object.entries(csp).map((entry) => {
+    const [directive, valueSource] = entry as [string, ToStringable | ToStringable[]];
+    let arr = [directive]
+    if (valueSource instanceof Array) {
+      arr = arr.concat(valueSource.map(v => v.toString()))
+    } else {
+      arr.push( valueSource.toString())
+    }
+    return arr.filter(value => value !== "").join(" ");
+  }).join("; ")
 }
